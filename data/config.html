@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<script type="text/javascript">
+			var ws = new WebSocket("ws://192.168.0.104/ws");
+			var isLogged = false;
+			var datasetWritingEnabled = false;
+
+			ws.onopen = function() {
+                ws.send("u"); // when page is loaded check if the client is logged
+				ws.send("w");
+				ws.send("v");
+            }
+
+			ws.onmessage = function(evt) {
+				console.log(evt.data);
+                if(evt.data[0] == 'p')
+                {
+                    res = evt.data.substring(1);
+
+                    if(res[0] == '0')
+						window.location.href = "/login";
+                    else
+                        isLogged = true;
+                }
+				else if(evt.data[0] == 'l')
+				{
+					res = evt.data.substring(1);
+
+					info = res.split(",");
+					console.log(info[0] + " " + info[1] + " " + info[2]);
+
+					document.getElementById("total-people").innerHTML = info[0];
+					document.getElementById("inside").innerHTML = info[1];
+					document.getElementById("outside").innerHTML = info[2];
+				}
+				else if(evt.data[0] == 'w')
+				{
+					if(evt.data[1] == "1")
+					{
+						document.getElementById("dataset").innerHTML = "Disable dataset recording";
+					}
+					else
+					{
+						document.getElementById("dataset").innerHTML = "Enable dataset recording";
+					}
+				}
+			};
+
+			function sendData(){
+				var v1 = document.getElementById("var1").value;
+				var v2 = document.getElementById("var2").value;
+				var v3 = document.getElementById("var3").value;
+				var v4 = document.getElementById("var4").value;
+				var message ="v" + v1.toString() + ";" + v2.toString() + ";" + v3.toString() + ";" + v4.toString() + ";";
+				ws.send(message);
+			}
+
+			function login(){
+				var username = document.getElementById("username").value;
+				var password = document.getElementById("password").value;
+				var message = "c" + username + ";" + password + ";";
+				ws.send(message);
+			}
+
+			function logout(){
+				message = "l";
+				ws.send(message);
+				window.location = "/login"
+			}
+
+			function downloadLog(){
+				window.location.href="/download";
+			}
+
+			function showLog(){
+				window.location.href="/log";
+			}
+
+			function selectAlgorithm(){
+				window.location.href = "/algorithm"
+			}
+
+			function changeStateDatasetWriting(){
+				ws.send("e");
+				datasetWritingEnabled = !datasetWritingEnabled;
+				if(datasetWritingEnabled)
+				{
+					document.getElementById("dataset").innerHTML = "Disable dataset recording";
+				}
+				else
+				{
+					document.getElementById("dataset").innerHTML = "Enable dataset recording";
+				}
+			}
+
+		</script>
+		<title>Tablou de configurare</title>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+	<!--===============================================================================================-->
+	<!--===============================================================================================-->
+		<link rel="stylesheet" type="text/css" href="util.css">
+		<link rel="stylesheet" type="text/css" href="config.css">
+		<link rel="icon" type="image/png" href="upt-logo.png"/>
+	<!--===============================================================================================-->
+	</head>
+	<body>
+		<div class="container-contact100" id="config" name="config">
+
+			<div class="wrap-contact100">
+				<div class="wrap-info">
+					<p class="total-people-text">People which passed over the gate:</p>
+					<p class="total-people" id="total-people">0</p>
+					<p class="inside-text">People which walked inside:</p>
+					<p class="inside" id="inside">0</p>
+					<p class="outside-text">People which walked outside:</p>
+					<p class="outside" id="outside">0</p>
+				</div>
+				<form class="contact100-form validate-form">
+
+					<div class="button-container">
+						<!-- <div class="container-contact100-form-btn btn-small">
+							<a href="/algorithm" class="contact100-form-btn">
+								Algorithm selection
+								<div class="img-container"><img src="settings.png" alt=""></div>
+							</a>
+						</div> -->
+		
+		
+						<div class="container-contact100-form-btn btn-small">
+							<button class="contact100-form-btn" id="dataset" onclick="changeStateDatasetWriting()">
+								<span>
+									<i class="fa fa-paper-plane-o m-r-6" aria-hidden="true"></i>
+									Enable dataset recording
+								</span>
+								<div class="img-container"><img src="rec.png" alt=""></div>
+							</button>
+						</div>
+					</div>
+
+					<div class="button-container">
+						<div class="container-contact100-form-btn btn-small">
+							<button class="contact100-form-btn" onclick="logout()">
+								<span>
+									<i class="fa fa-paper-plane-o m-r-6" aria-hidden="true"></i>
+									Logout
+								</span>
+								<div class="img-container"><img src="logout.png" alt=""></div>
+							</button>
+						</div>
+		
+		
+						<div class="container-contact100-form-btn btn-small">
+							<a href="/table" class="contact100-form-btn">
+								Show log
+								<div class="img-container"><img src="show.png" alt=""></div>
+							</a>
+						</div>
+					</div>
+					
+					<div class="button-container">
+						<div class="container-contact100-form-btn btn-small">
+							<a href="/download-features" class="contact100-form-btn">
+								Download features file
+								<div class="img-container"><img src="down-arrow.png" alt=""></div>
+							</a>
+						</div>
+		
+		
+						<div class="container-contact100-form-btn btn-small">
+							<a href="/delete" class="contact100-form-btn">
+								Clear features file
+								<div class="img-container"><img src="file.png" alt=""></div>
+							</a>
+						</div>
+					</div>
+					
+				</form>
+			</div>
+		</div>
+
+		<div class="footer">
+			<img src="ac-logo.png" alt="" width="130vh" height="50vh">
+			<img src="upt-logo.png" alt="" width="130vh" height="50vh">
+		</div>
+	</body>
+</html>

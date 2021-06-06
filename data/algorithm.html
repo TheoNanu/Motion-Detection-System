@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Algorithm selection</title>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+	<!--===============================================================================================-->
+	<!--===============================================================================================-->
+		<link rel="stylesheet" type="text/css" href="util.css">
+		<link rel="stylesheet" type="text/css" href="algorithm.css">
+		<script type="text/javascript" src="algorithm.js"></script>
+		<link rel="icon" type="image/jpg" href="upt-logo.png"/>
+    </head>
+    <body>
+        <div class="container-contact100" id="config" name="config">
+
+			<div class="wrap-contact100">
+				<div class="radio-group">
+					<form class="algorithm-form">
+						<p>Select the network you want to use for motion classification:</p>
+						<input type="radio" id="nn" name="algo" value="0" checked>
+						<label for="nn">Keras Neural Network</label><br>
+						<input type="radio" id="forest" name="algo" value="1">
+						<label for="forest">Genetic Algorithm Neural Network</label><br>
+						<input type="radio" id="tree" name="algo" value="2">
+						<label for="tree">Genetic Algorithm Neural Network Optimized Structure</label><br>
+						<div class="container-contact100-form-btn btn-small">
+							<button class="contact100-form-btn" onclick="chooseAlgorithm()">
+								<span>
+									<i class="fa fa-paper-plane-o m-r-6" aria-hidden="true"></i>
+									Apply
+								</span>
+								<div class="img-container"><img src="submit.png" alt=""></div>
+							</button>
+						</div>
+						<div class="container-contact100-form-btn btn-small">
+							<a href="/config" class="contact100-form-btn">
+								Home
+								<div class="img-container"><img src="home.png" alt=""></div>
+							</a>
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+
+		<div class="footer">
+			<img src="ac-logo.png" alt="" width="130vh" height="50vh">
+			<img src="upt-logo.png" alt="" width="130vh" height="50vh">
+		</div>
+    </body>
+</html>

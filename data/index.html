@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <script type="text/javascript">
+            var ws = new WebSocket("ws://192.168.0.104/ws");
+            var isLogged = false;
+            ws.onopen = function() {
+                window.alert("Connected");
+            };
+
+            ws.onmessage = function(evt) {
+                var pers = "";
+                let i = 0;
+                while(evt.data[i] != ';')
+                {
+                    pers += evt.data[i];
+                    i++;
+                }
+                console.log("Bool value " + evt.data[i + 1]);
+                if(evt.data[i + 1] == '0')
+                    isLogged = false;
+                else
+                    isLogged = true;
+                document.getElementById("info").innerHTML = "Persoane care au trecut prin poarta: " + pers;
+                console.log("log " +isLogged);
+                if(isLogged == false)
+                {
+                    document.getElementById("config").hidden = true;
+                    document.getElementById("login").hidden = false;
+                }
+                else if(isLogged == true)
+                {
+                    document.getElementById("login").hidden = true;
+                    document.getElementById("config").hidden = false;
+                }
+            };
+
+            function sendData(){
+                var v1 = document.getElementById("var1").value;
+                var v2 = document.getElementById("var2").value;
+                var v3 = document.getElementById("var3").value;
+                var v4 = document.getElementById("var4").value;
+                var message ="v" + v1.toString() + ";" + v2.toString() + ";" + v3.toString() + ";" + v4.toString() + ";";
+                ws.send(message);
+            }
+
+            function login(){
+                var username = document.getElementById("username").value;
+                var password = document.getElementById("password").value;
+                var message = "c" + username + ";" + password + ";";
+                ws.send(message);
+            }
+
+            function logout(){
+                message = "l";
+                ws.send(message);
+            }
+
+            function downloadLog(){
+                message = "d";
+                ws.send(message);
+            }
+        </script>
+        <link rel="stylesheet" type="text/css" href="style.css">
+    </head>
+
+    <body>
+        <form id="config" class="form">
+            <label for="var1">Var1</label>
+            <input type="number" id="var1" name="var1"><br>
+            <label for="var2">Var2</label>
+            <input type="number" name="var2" id="var2"><br>
+            <label for="var3">Var3</label>
+            <input type="number" name="var3" id="var3"><br>
+            <label for="var4">Var4</label>
+            <input type="number" name="var4" id="var4"><br>
+            <button onclick="sendData()">Configureaza</button>
+            <button onclick="logout()">Logout</button>
+            <a href="/download">Download log</a>
+            <a href="/log">Show log</a>
+        </form>
+        <form id="login">
+            <label for="username">Username</label>
+            <input type="text" id="username" name="username">
+            <label for="password">Password</label>
+            <input type="password" id="password" name="password">
+            <button onclick="login()">Logare</button>
+        </form>
+        <div>
+            <p id="info"></p>
+        </div>
+    </body>
+</html>

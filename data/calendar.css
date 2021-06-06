@@ -1,0 +1,200 @@
+:root{
+    --light-gray: #DADCE0;
+    --light-blue: #1B9CE2;
+}
+
+body{
+    margin: 0;
+}
+
+#app-calendar{
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    grid-template-rows: repeat(5, 1fr);
+    width: 70%;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.day{
+    border-bottom: 1px solid var(--light-gray);
+    border-right: 1px solid var(--light-gray);
+    text-align: center;
+    padding: 10px;
+    font-size: 12px;
+    cursor: pointer;
+    transition: background-color 200ms color 200ms;
+}
+
+.day:hover {
+    border: 3px solid #827ffe;
+    padding: 7px;
+}
+
+.day-name {
+    border-bottom: 1px solid var(--light-gray);
+    border-right: 1px solid var(--light-gray);
+    text-align: center;
+    padding-top: 5px;
+    font-size: 12px;
+    transition: background-color 200ms color 200ms;
+}
+
+.name{
+    padding-bottom: 5px;
+}
+
+.weekend {
+    color: #827ffe;
+}
+
+.selected {
+    background-color: #827ffe;
+    color: white;
+}
+
+.month {
+    width: 100%;
+    height: 50px;
+    background-color: #827ffe;
+    display: flex;
+    justify-content: space-between;
+    font-size: 24px;
+    width: 70%;
+    margin-left:auto;
+    margin-right:auto;
+    align-items: center;
+    margin-top: 0vh;
+}
+
+.prev-month {
+    display: flex;
+    justify-content: center;
+    font-size: 12px;
+    text-align: center;
+    cursor: pointer;
+}
+
+.next-month {
+    display: flex;
+    justify-content: center;
+    font-size: 12px;
+    cursor: pointer;
+}
+
+.prev-month:hover {
+    color: white;
+}
+
+.next-month:hover {
+    color: white;
+}
+
+.stats {
+    text-align: center;
+    height: 10vh;
+}
+
+.footer {
+    background-color: rgb(224, 224, 215);
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    height: 9vh;
+    padding: 1vh;
+  }
+
+  .calendar-container {
+      height: 69vh;
+      padding-top: 20vh;
+  }
+
+  .prev-month-day {
+    border-bottom: 1px solid var(--light-gray);
+    border-right: 1px solid var(--light-gray);
+    text-align: center;
+    padding: 10px;
+    font-size: 12px;
+    transition: background-color 200ms color 200ms;
+  }
+
+  .container-contact100-form-btn {
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: -moz-box;
+    display: -ms-flexbox;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    padding-top: 5px;
+    height: 15vh;
+  }
+  
+  .contact100-form-btn {
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: -moz-box;
+    display: -ms-flexbox;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 0 20px;
+    width: 25vw;
+    height: 7vh;
+    margin: 5px;
+    background-color: transparent;
+    border-radius: 31px;
+  
+    font-family: Ubuntu-Bold;
+    font-size: 1.5vw;
+    color: #fff;
+    line-height: 1.2;
+    text-transform: uppercase;
+    text-decoration: none;
+  
+    -webkit-transition: all 0.4s;
+    -o-transition: all 0.4s;
+    -moz-transition: all 0.4s;
+    transition: all 0.4s;
+    position: relative;
+    z-index: 1;
+  }
+
+  .btn-small {
+      height: 7vh;
+  }
+  
+  .contact100-form-btn::before {
+    content: "";
+    display: block;
+    position: absolute;
+    z-index: -1;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 50%;
+    -webkit-transform: translateX(-50%);
+    -moz-transform: translateX(-50%);
+    -ms-transform: translateX(-50%);
+    -o-transform: translateX(-50%);
+    transform: translateX(-50%);
+    border-radius: 31px;
+    background-color: #827ffe;
+    pointer-events: none;
+    
+    -webkit-transition: all 0.4s;
+    -o-transition: all 0.4s;
+    -moz-transition: all 0.4s;
+    transition: all 0.4s;
+  }
+  
+  .contact100-form-btn:hover:before {
+    background-color: #403866;
+    width: calc(100% + 20px);
+  }
+
+  .button-container {
+    display: flex;
+    justify-content: space-evenly;
+    height: 10vh;
+  }

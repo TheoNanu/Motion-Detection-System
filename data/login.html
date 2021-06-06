@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <script type="text/javascript">
+            var ws = new WebSocket("ws://192.168.0.104/ws");
+            var isLogged = false;
+
+            ws.onopen = function() {
+                ws.send("u"); // when page is loaded check if the client is logged
+            }
+
+    
+            ws.onmessage = function(evt) {
+    
+                if(evt.data[0] == 'p')
+                {
+                    res = evt.data.substring(1);
+
+                    if(res[0] == '0')
+                        isLogged = false;
+                    else
+                        window.location.href = "/config";
+                }
+            };
+
+            function login(){
+                var username = document.getElementById("username").value;
+                var password = document.getElementById("password").value;
+                var message = "c" + username + ";" + password + ";";
+                ws.send(message);
+            }
+
+            /*function login(){
+                const url = "http://192.168.0.103/post";
+                var username = document.getElementById("username").value;
+                var password = document.getElementById("password").value;
+                const data = username + ";" + password + ";";
+
+                const params = {
+                    headers:{
+                        "content-type": "application/text charset=UTF-8"
+                    },
+                    body: data,
+                    method: "POST"
+                };
+                fetch(url, params)
+                .then(data => {return data.json()})
+                .then(res => {console.log(res)})
+                .catch(error => {console.log(error)})
+            }*/
+    
+        </script>
+        <title>Login</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!--===============================================================================================-->
+    <!--===============================================================================================-->
+        <link rel="stylesheet" type="text/css" href="util.css">
+        <link rel="stylesheet" type="text/css" href="main.css">
+        <link rel="icon" type="image/png" href="upt-logo.png"/>
+    </head>
+    <body>
+        <div class="container-contact100" id="login" name="login">
+
+            <div class="wrap-contact100">
+                <form class="contact100-form validate-form" action="/post" method="POST">
+                    <span class="contact100-form-title">
+                        Logare
+                    </span>
+    
+                    <div class="wrap-input100 validate-input" data-validate="Please enter your name">
+                        <input class="input100" type="text" name="username" id="username" placeholder="Username">
+                        <span class="focus-input100"></span>
+                    </div>
+    
+                    <div class="wrap-input100 validate-input" data-validate = "Please enter your email: e@a.x">
+                        <input class="input100" type="password" name="password" id="password" placeholder="Parola">
+                        <span class="focus-input100"></span>
+                    </div>
+    
+                    <div class="container-contact100-form-btn">
+                        <button class="contact100-form-btn" onclick="login()">
+                            <span>
+                                <i class="fa fa-paper-plane-o m-r-6" aria-hidden="true"></i>
+                                Login
+                            </span>
+                            <div class="img-container"><img src="login.png" alt=""></div>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <div class="footer">
+            <img src="ac-logo.png" alt="" width="130vh" height="50vh">
+			<img src="upt-logo.png" alt="" width="130vh" height="50vh">
+        </div>
+    </body>
+</html>
