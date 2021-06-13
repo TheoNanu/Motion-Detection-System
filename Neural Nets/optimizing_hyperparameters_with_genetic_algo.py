@@ -11,6 +11,7 @@ import matplotlib.pyplot as plt
 from classifier_generator import ClassifierGenerator
 from exceptions.invalid_layers import InvalidLayersNumber
 from exceptions.invalid_neurons import InvalidNeuronsNumber
+from exceptions.invalid_structure import InvalidNeuralNetStructure
 from genetic_algorithm import GeneticAlgorithm
 
 
@@ -18,20 +19,26 @@ class GeneticAlgorithmNetworkOptimizer(ClassifierGenerator, GeneticAlgorithm):
     def __init__(self, dataset_file, min_layers, max_layers, min_neurons, max_neurons, population_size=12, epochs=20,
                  mutation_rate=0.05):
         super().__init__(dataset=dataset_file)
+
+        if min_layers < 1:
+            raise InvalidLayersNumber
+
+        if min_neurons < 1:
+            raise InvalidNeuronsNumber
+
+        if min_layers > max_layers:
+            raise InvalidNeuralNetStructure
+
+        if min_neurons > max_neurons:
+            raise InvalidNeuralNetStructure
+
         self.epochs = epochs
         self.populationSize = population_size
         self.mutationRate = mutation_rate
         self.verbose = None
 
-        if min_layers < 1:
-            raise InvalidLayersNumber
-
         self.minLayers = min_layers
         self.maxLayers = max_layers
-
-        if min_neurons < 1:
-            raise InvalidNeuronsNumber
-
         self.minNeurons = min_neurons
         self.maxNeurons = max_neurons
         self.population = []
@@ -128,16 +135,8 @@ class GeneticAlgorithmNetworkOptimizer(ClassifierGenerator, GeneticAlgorithm):
         child_layers = []
         child_activations = []
 
-        print('First network layers: ' + str(parent1_layers))
-        print('Second network layers: ' + str(parent2_layers))
-
-        print('First network activations: ' + str(parent1_activations))
-        print('Second network activations: ' + str(parent2_activations))
-
         layers_number = random.randint(min(len(parent1_layers), len(parent2_layers)),
                                        max(len(parent1_layers), len(parent2_layers)))
-
-        print('Child layers number: ' + str(layers_number))
 
         if len(parent1_layers) > len(parent2_layers):
             temp_layers = parent1_layers
@@ -149,7 +148,6 @@ class GeneticAlgorithmNetworkOptimizer(ClassifierGenerator, GeneticAlgorithm):
             parent2_activations = temp_activations
 
         split = random.randint(0, len(parent1_layers) - 1)
-        print('Split: ' + str(split))
 
         j = 0
         for i in range(layers_number):
@@ -165,8 +163,6 @@ class GeneticAlgorithmNetworkOptimizer(ClassifierGenerator, GeneticAlgorithm):
                     child_layers.append(parent1_layers[i])
                     child_activations.append(parent1_activations[i])
 
-        print('Child Layers: ' + str(child_layers))
-        print('Child activations: ' + str(child_activations))
         return child_layers, child_activations
 
     def mutation(self, child_layers, child_activations):

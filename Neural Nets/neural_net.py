@@ -44,10 +44,6 @@ class KerasNeuralNet(ClassifierGenerator):
         self.history = self.outputModel.fit(self.trainFeatures, self.trainLabels, epochs=epochs, batch_size=batch_size,
                                             validation_data=(self.valFeatures, self.valLabels))
 
-    def predict(self):
-        pred = self.outputModel.predict(np.array([[0.30, 0.09, 0.89, 0.28, 0.00, 0.99, 0.56, 1.00]]))
-        print("Prediction: " + str(pred))
-
     def plot_learning_curves(self):
         history_dict = self.history.history
 
@@ -84,6 +80,6 @@ if __name__ == '__main__':
     net = KerasNeuralNet('datasets/features_processed.csv', [8, 12, 12, 6, 1])
 
     net.train(1000, 512)
-    net.predict()
+    # net.predict()
     net.plot_learning_curves()
     net.generate('ESP_NN')

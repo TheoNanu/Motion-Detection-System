@@ -10,12 +10,10 @@
 
 extern "C"{
   #include "Neural Nets\output\ESP_NN.c"
-//  #include "Neural Nets\output\ESP_NN_GA.c"
-//  #include "Neural Nets\output\ESP_NN_OPTIMIZED.c"
 };
 
-//WiFiUDP ntpUDP;
-//NTPClient timeClient(ntpUDP);
+WiFiUDP ntpUDP;
+NTPClient timeClient(ntpUDP);
 
 SimpleTimer timer;
  
@@ -30,12 +28,15 @@ void onWsEvent(AsyncWebSocket * server, AsyncWebSocketClient * client, AwsEventT
   }
   else if(type == WS_EVT_DATA){
     Serial.print("Data received: ");
+    for(int i = 0; i < len; i++)
+      Serial.print((char)data[i]);
+
+    Serial.println();
     processMessage(data, len);
   }
 }
  
 void setup(){
-  int a[2] = {1, 2};
   Serial.begin(115200);
   Serial2.begin(115200, SERIAL_8N1, RXD2, TXD2);
  
@@ -50,15 +51,12 @@ void setup(){
 
   header = "PeakLeft,ActivationLeft,DeactivationLeft,PeakRight,ActivationRight,DeactivationRight,MeanLeft,MeanRight";
 
-//  writeHeaderIfFileEmpty("/featurestest1.csv", header);
+  writeHeaderIfFileEmpty("/features.csv", header);
 
-  /*timeClient.begin();
-  timeClient.setTimeOffset(10800);*/
+  timeClient.begin();
+  timeClient.setTimeOffset(10800);
 
-//  timer.setInterval(86400000, writeInLogFile);
-
-//  initArray(leftSensorValuesFiltered);
-//  initArray(rightSensorValuesFiltered);
+  timer.setInterval(86400000, writeInLogFile);
 
   leftSensorValuesFiltered = (unsigned int*) malloc(1 * sizeof(unsigned int));
   rightSensorValuesFiltered = (unsigned int*) malloc(1 * sizeof(unsigned int));
@@ -66,20 +64,20 @@ void setup(){
 
 
 void loop(){
-  /*while(!timeClient.update()){
-    timeClient.forceUpdate();
-  }*/
+   while(!timeClient.update()){
+      timeClient.forceUpdate();
+   }
    
    formattedDate = currentYear + "," + currentMonth + "," + currentDay;
    
-   //String date = timeClient.getFormattedDate();
+   String date = timeClient.getFormattedDate();
    //Serial.println(date);
 
-   //currentYear = date.substring(0, 4);
-   //currentMonth = date.substring(5, 7);
-   //currentDay = date.substring(8, 10);
+   currentYear = date.substring(0, 4);
+   currentMonth = date.substring(5, 7);
+   currentDay = date.substring(8, 10);
    
-   //timer.run();
+   timer.run();
 
     while(Serial2.available() > 0){
       received = flag;
@@ -159,46 +157,10 @@ void loop(){
       differenceArray[i] = (int)(rightSensorValuesFiltered[i] - leftSensorValuesFiltered[i]);
     }
 
-
-//    Serial.println("Left Sensor Values:");
-//    for(int i = 0; i < counterLeft; i++)
-//    {
-//      Serial.print(String(leftSensorValuesFiltered[i]) + " ");
-//    }
-//
-//    Serial.println();
-//
-//    Serial.println("Right Sensor Values:");
-//    for(int i = 0; i < counterLeft; i++)
-//    {
-//      Serial.print(String(rightSensorValuesFiltered[i]) + " ");
-//    }
-//
-//    Serial.println();
-//
-//    Serial.println("Difference Array:");
-//    for(int i = 0; i < counterLeft; i++)
-//    {
-//      Serial.print(String(differenceArray[i]) + " ");
-//    }
-//
-//    Serial.println();
-
     int activRight = getActivationIndex(rightSensorValuesFiltered, prevDistanceRight, counterRight);
     int activLeft = getActivationIndex(leftSensorValuesFiltered, prevDistanceLeft, counterLeft);
     int deactivRight = getDeactivationIndex(rightSensorValuesFiltered, prevDistanceRight, counterRight);
     int deactivLeft = getDeactivationIndex(leftSensorValuesFiltered, prevDistanceLeft, counterLeft);
-
-//    Serial.println("Activation index right: "  + String(activRight));
-//    Serial.println("Activation index left: " + String(activLeft));
-//    Serial.println("Deactivation index right: " + String(deactivRight));
-//    Serial.println("Deactivation index left: " + String(deactivLeft));
-//    Serial.println("Peak right: " + String(rightIndex));
-//    Serial.println("Peak left: " + String(leftIndex));
-
-    //printDifference();
-
-    //int len = lenDifferenceArray();
 
     int len = counterLeft;
 
@@ -229,9 +191,6 @@ void loop(){
 
     int lenLeft = counterLeft;
     int lenRight = counterRight;
-
-//    Serial.println("Left " + String(lenLeft));
-//    Serial.println("Right " + String(lenRight));
 
     float maxVal = abs(meanLeft) > abs(meanRight) ? meanLeft : meanRight;
 
@@ -285,27 +244,13 @@ void loop(){
     const float input[8] = {leftIndexFeature, activLeftFeature, deactivLeftFeature, rightIndexFeature, 
                             activRightFeature, deactivRightFeature, meanLeftFeature, meanRightFeature};
     
-    Serial.println("Inputs: " + String(input[0]) + " " + String(input[1]) + " "  + String(input[2]) + " " + String(input[3]) + " " + String(input[4]) + " " + String(input[5])
-                  + " " + String(input[6]) + " " + String(input[7]));
+//    Serial.println("Inputs: " + String(input[0]) + " " + String(input[1]) + " "  + String(input[2]) + " " + String(input[3]) + " " + String(input[4]) + " " + String(input[5])
+//                  + " " + String(input[6]) + " " + String(input[7]));
     
     float output[1] = {-1};
     int out = -1;
 
-//    if(networkType == 0)
-//    {
-      ESP_NN(input, output);
-      Serial.println("Neural network output: " + String(output[0]));
-//    }
-//    else if(networkType == 1)
-//    {
-//      ESP_NN_GA(input, output);
-////    Serial.println("Random forest output: " + String(out));
-//    }
-//    else
-//    {
-//      ESP_NN_OPTIMIZED(input, output);
-////    Serial.println("Decision tree output: " + String(out));
-//    }
+    ESP_NN(input, output);
 
     if(output[0] > 0.7)
     {
@@ -330,7 +275,7 @@ void loop(){
     }
     else
     {
-//        Serial.println("There was a problem running the algorithm.");
+        Serial.println("There was a problem running the algorithm.");
     }
 
     if(globalClient != NULL)
@@ -339,7 +284,7 @@ void loop(){
       globalClient->text(message);
     }
 
-    Serial.println("Freeing memory...");
+//    Serial.println("Freeing memory...");
     
     free(leftSensorValuesFiltered);
     free(rightSensorValuesFiltered);
@@ -358,7 +303,7 @@ void loop(){
 //  Serial.println(state);
 //  Serial.println("Counter: " + String(counter));
 
-  // store values from this iteration for the next iteration into the prev distance variables only when there is no movement (in order to be able to detect movement)
+  // get reference value in the first iterations when reads get to a stable value
   if(!flag)
   {
     if(prevDistanceLeft == distanceLeftFiltered && distanceLeftFiltered != 0)
@@ -430,6 +375,7 @@ void processMessage(uint8_t *msg, size_t len) {
             Serial.print(dataFromFile);
             String message = "d" + dataFromFile + " ";
             globalClient->text(message);
+            dataFromFile = "";
         }
         else
         {
@@ -485,9 +431,13 @@ void processMessage(uint8_t *msg, size_t len) {
         }
         else
         {
-          int i = line.lastIndexOf(',');
-          String dateInFile = line.substring(0, i);
-          String pers = line.substring(i+1);
+          int index = 0;
+          for(int i = 0; i < 3; i++)
+          {
+            index = line.indexOf(',', index + 1);
+          }
+          String dateInFile = line.substring(0, index);
+          String pers = line.substring(index + 1);
 
           int strEqual = dateInFile.compareTo(recvDate);
 
@@ -495,7 +445,7 @@ void processMessage(uint8_t *msg, size_t len) {
           Serial.println(recvDate.length());
           
 
-          //Serial.println("Date read from file: " + dateInFile + " .Date received: " + recvDate + " .They are different: " + String(strEqual));
+          Serial.println("Date read from file: " + dateInFile + " .Date received: " + recvDate + " .They are different: " + String(strEqual));
 
           if(dateInFile.compareTo(recvDate) == 0)
           {
@@ -516,7 +466,7 @@ void processMessage(uint8_t *msg, size_t len) {
       logfile.close();
       if(found == false)
       {
-        globalClient->text("iNu am gasit informatii pentru ziua respectiva.");
+        globalClient->text("iThere is no info for the selected day.");
       }
       break;
     }
@@ -555,6 +505,15 @@ void processMessage(uint8_t *msg, size_t len) {
         globalClient->text(message);
       }
       break;
+    }
+
+    case 'f':
+    {
+      if(SPIFFS.remove("/features.csv") == true)
+      {
+        Serial.println("File was removed.");
+        writeHeaderIfFileEmpty("/features.csv", header);
+      }
     }
   }
 }
@@ -647,39 +606,6 @@ int indexOfMinElem(unsigned int *arr, int len)
   return index;
 }
 
-void printLeftArray()
-{
-  Serial.println("Values from the left sensor:");
-  for(int i = 0; i < counterLeft; i++)
-    Serial.print(String(leftSensorValuesFiltered[i]) + " ");
-
-  Serial.println();
-
-  delay(2000);
-}
-
-void printRightArray()
-{
-  Serial.println("Values from the right sensor:");
-  for(int i = 0; i < counterRight; i++)
-    Serial.print(String(rightSensorValuesFiltered[i]) + " ");
-
-  Serial.println();
-
-  delay(2000);
-}
-
-void printDifference()
-{
-  Serial.println("Difference between the 2 arrays:");
-  for(int i = 0; i < counterLeft; i++)
-    Serial.println(String(differenceArray[i]) + " ");
-
-  Serial.println();
-
-  delay(2000);
-}
-
 int getActivationIndex(unsigned int *arr, int value, int len)
 {
   for(int i = 0; i < len; i++)
@@ -745,7 +671,7 @@ void writeInLogFile(){
    }
 
    if(logfile.print(formattedDate + "," + String(total) + "," + String(inside) + "," + String(outside) + '\n')){
-    //Serial.println("File was written");
+    Serial.println("File was written");
    }
    else{
     Serial.println("File write failed");

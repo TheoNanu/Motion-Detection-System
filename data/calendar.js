@@ -2,15 +2,29 @@
 
 var ws = new WebSocket("ws://192.168.0.104/ws");
 
+ws.onopen = function() {
+    ws.send("u"); // when page is loaded check if the client is logged
+}
+
 ws.onmessage = function(evt){
     if(evt.data[0] == 'i')
     {
         console.log(evt.data);
         var pers = evt.data.substring(1);
-        if(pers[0] == 'N')
+        splited = pers.split(",");
+        if(pers[0] == 'T')
             document.querySelector(".stats").innerHTML = pers;
         else
-            document.querySelector(".stats").innerHTML = "Persoane care au trecut prin poarta: " + pers;
+            document.querySelector(".stats").innerHTML = "Total persons which walked over the gate: " + splited[0] + 
+                                                            ". People which walked inside: " + splited[1] + 
+                                                            ". People which walked outside: " + splited[2] + ".";
+    }
+    else if(evt.data[0] == 'p')
+    {
+        res = evt.data.substring(1);
+
+        if(res[0] == '0')
+            window.location.href = "/login";
     }
 }
 

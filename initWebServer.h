@@ -142,7 +142,9 @@ void initWebServer() {
 
    server.on("/delete", HTTP_GET, [](AsyncWebServerRequest * request) {
     if(SPIFFS.remove("/features.csv") == true)
+    {
       Serial.println("File was removed.");
+    }
       
     request->send(SPIFFS, "/config.html", "text/html");
   });

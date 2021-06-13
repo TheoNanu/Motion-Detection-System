@@ -94,6 +94,10 @@
 				}
 			}
 
+			function clearFeaturesFile(){
+				ws.send("f");
+			}
+
 		</script>
 		<title>Tablou de configurare</title>
 		<meta charset="UTF-8">
@@ -169,10 +173,13 @@
 		
 		
 						<div class="container-contact100-form-btn btn-small">
-							<a href="/delete" class="contact100-form-btn">
-								Clear features file
+							<button class="contact100-form-btn" onclick="clearFeaturesFile()">
+								<span>
+									<i class="fa fa-paper-plane-o m-r-6" aria-hidden="true"></i>
+									Clear features file
+								</span>
 								<div class="img-container"><img src="file.png" alt=""></div>
-							</a>
+							</button>
 						</div>
 					</div>
 					
@@ -181,8 +188,8 @@
 		</div>
 
 		<div class="footer">
-			<img src="ac-logo.png" alt="" width="130vh" height="50vh">
-			<img src="upt-logo.png" alt="" width="130vh" height="50vh">
+			<img src="ac-logo.png" alt="" width="140vw" height="50vh">
+			<img src="upt-logo.png" alt="" width="130vw" height="50vh">
 		</div>
 	</body>
 </html>

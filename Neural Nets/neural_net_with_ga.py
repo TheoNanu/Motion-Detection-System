@@ -100,47 +100,24 @@ class GeneticAlgorithmNetworkTrainer(ClassifierGenerator, GeneticAlgorithm):
         for layer in net1.layers:
             nn1_weights.append(layer.get_weights()[0])
             nn1_biases.append(layer.get_weights()[1])
-            # print(layer.get_config())
 
         for layer in net2.layers:
             nn2_weights.append(layer.get_weights()[0])
             nn2_biases.append(layer.get_weights()[1])
-            # print(layer.get_config())
-
-        # print('Weights for the first network: ' + str(nn1_weights))
-        # print('Weights for the second network: ' + str(nn2_weights))
-        # print('First network weights shape: ' + str(np.asarray(nn1_weights).shape))
-        # print('Second network weights shape: ' + str(np.asarray(nn2_weights).shape))
-        #
-        # print('Biases for the first network: ' + str(nn1_biases))
-        # print('Biases for the second network: ' + str(nn2_biases))
-        # print('First network biases shape: ' + str(np.asarray(nn1_biases).shape))
-        # print('Second network biases shape: ' + str(np.asarray(nn2_biases).shape))
 
         for i in range(len(nn1_weights)):
             split = random.randint(0, np.shape(nn1_weights[i])[1] - 1)
-            # print("Split: " + str(split))
             for j in range(int(split), np.shape(nn1_weights[i])[1]):
-                # print(str(i) + " " + str(nn1Weights[i][:, j]))
                 nn1_weights[i][:, j] = nn2_weights[i][:, j]
 
             child_weights.append(nn1_weights[i])
 
         for i in range(len(nn1_biases)):
-            # print("Before: " + str(nn1_biases[i]))
             split = random.randint(0, len(nn1_biases[i]) - 1)
             for j in range(int(split), len(nn1_biases[i]) - 1):
                 nn1_biases[i][j] = nn2_biases[i][j]
 
-            # print("After: " + str(nn1_biases[i]))
-
             child_biases.append(nn1_biases[i])
-
-        # print('Weights for the child: ' + str(child_weights))
-        # print('Child weights shape: ' + str(np.asarray(child_weights).shape))
-        #
-        # print('Biases for the child: ' + str(child_biases))
-        # print('Child biases shape: ' + str(np.asarray(child_biases).shape))
 
         return child_weights, child_biases
 
@@ -283,7 +260,7 @@ class GeneticAlgorithmNetworkTrainer(ClassifierGenerator, GeneticAlgorithm):
                     models_for_reproduction.append(self.population[self.ordered[t]])
                     t -= 1
 
-            self.create_new_population(models_for_reproduction, 0.1)
+            self.create_new_population(models_for_reproduction, 0.0)
             self.population = self.nextPopulation
             self.nextPopulation = []
 
@@ -302,8 +279,8 @@ if __name__ == '__main__':
     model.add(layers.Dense(1, activation='sigmoid'))
 
     try:
-        nn = GeneticAlgorithmNetworkTrainer(40, 'datasets/features_processed.csv', model, mutation_rate=0.1)
-        nn.genetic_process(1000, include_only_fittest=False, verbose=True)
+        nn = GeneticAlgorithmNetworkTrainer(20, 'datasets/features_processed.csv', model, mutation_rate=0.1)
+        nn.genetic_process(500, include_only_fittest=False, verbose=True)
         out_files = nn.generate('ESP_NN_GA')
         print("Output:\n" + "\n".join(out_files))
     except InvalidNeuralNetStructure:

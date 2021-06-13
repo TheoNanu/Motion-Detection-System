@@ -3,6 +3,7 @@ var isLogged = false;
 const table = document.querySelector(".data-table");
 
 ws.onopen = function() {
+    ws.send("u");
     ws.send("r");
 };
 
@@ -52,5 +53,14 @@ ws.onmessage = function(evt) {
         //console.log(date[1]);
         //console.log(date[2]);
         //console.log(date[0]);
+    }
+    else if(evt.data[0] == 'p')
+    {
+        res = evt.data.substring(1);
+
+        if(res[0] == '0')
+            window.location.href = "/login";
+        else
+            isLogged = true;
     }
 };

@@ -6,13 +6,13 @@ def votingSystem(row):
     leftPeakFirst = False
     leftDeactivatedFirst = False
 
-    if row['leftGestureStartTime'] < row['rightGestureStartTime']:
+    if row['PeakLeft'] < row['PeakRight']:
         leftActivatedFirst = True
 
-    if row['leftCountLeft'] < row['rightCounterLeft']:
+    if row['ActivationLeft'] < row['ActivationRight']:
         leftPeakFirst = True
 
-    if row['leftGestureStopTime'] < row['rightGestureStopTime']:
+    if row['DeactivationLeft'] < row['DeactivationRight']:
         leftDeactivatedFirst = True
 
     if (leftPeakFirst or leftDeactivatedFirst) and leftActivatedFirst:
@@ -22,19 +22,20 @@ def votingSystem(row):
 
 
 if __name__ == '__main__':
-    df = pd.read_csv('left_and_right_samples.csv')
+    df = pd.read_csv('datasets/features_processed.csv')
     numberOfFeatures = df.shape[1] - 1
 
     print('Dataset size: ' + str(int(df.size / (numberOfFeatures + 1))))
-    print('Test set size: ' + str(int(0.3 * df.size / (numberOfFeatures + 1)) + 1))
+    print('Test set size: ' + str(int(0.2 * df.size / (numberOfFeatures + 1))))
 
-    testSetSize = int(0.3 * df.size / (numberOfFeatures + 1)) + 1
+    testSetSize = int(0.2 * df.size / (numberOfFeatures + 1)) + 1
     correctPredictions = 0
 
-    print(int(df.size / (numberOfFeatures + 1)) - testSetSize)
+    print(int(df.size / (numberOfFeatures + 1)) - testSetSize + 1)
 
-    test_df = df.iloc[int(df.size / (numberOfFeatures + 1)) - testSetSize:, :]
-    print(test_df.size / (numberOfFeatures + 1))
+    test_df = df.iloc[int(df.size / (numberOfFeatures + 1)) - testSetSize + 1:, :]
+    # print(test_df.size / (numberOfFeatures + 1))
+    # print(int(df.size / (numberOfFeatures + 1)) - testSetSize)
     print(test_df.shape)
     comparisons = 0
 
